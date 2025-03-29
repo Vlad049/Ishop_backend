@@ -13,10 +13,11 @@ def get_products(url: str = URL):
     session = HTMLSession()
     response = session.get(url)
 
-    products = response.html.xpath('//a[@_ngcontent-rz-client-c4240794426]/@href')
+    products = response.html.xpath('//rz-indexed-link[@class="product-link goods-tile__heading"]/a[@_ngcontent-rz-client-c4240794426 and @data-test="filter-link"]/@href')
     for product in products:
         save_product(product)
 
+    db.session.commit()
 
 def save_product(url: str):
     session = HTMLSession()
@@ -37,5 +38,4 @@ def save_product(url: str):
     )
 
     db.session.add(product)
-    db.session.commit()
     print(f"Товар '{name}' успішно збережено")

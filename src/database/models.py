@@ -1,4 +1,5 @@
 from typing import List, Optional
+from dataclasses import dataclass
 
 from sqlalchemy import String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -6,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database.base import db
 
 
+@dataclass
 class Review(db.Model):
     __tablename__ = "reviews"
 
@@ -14,6 +16,7 @@ class Review(db.Model):
     product_id: Mapped[str] = mapped_column(ForeignKey("products.id"))
 
 
+@dataclass
 class Product(db.Model):
     __tablename__ = "products"
 
