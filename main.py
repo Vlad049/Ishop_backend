@@ -4,6 +4,7 @@ from typing import Optional
 from flask import Flask, jsonify
 from flask_restful import Resource, reqparse, Api
 from dotenv import load_dotenv
+from flask_migrate import Migrate
 
 from src.database.base import db
 from src.data import parse_products
@@ -15,6 +16,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_URI")
 db.init_app(app)
 api = Api(app)
+migrate = Migrate(app, db)
 
 
 # with app.app_context():
@@ -64,14 +66,26 @@ class ProductAPI(Resource):
     def patch(self, product_id: str):
         parser = reqparse.RequestParser()
         parser.add_argument("text")
+        parser.add_argument("name")
         kwargs = parser.parse_args()
         msg = db_actions.add_review_product(product_id, **kwargs)
         responce = jsonify(msg)
         responce.status_code = 200
         return responce
-    
+
+
+class UserAPI(Resource):
+    def post(self, product_id: str):
+        parser = reqparse.RequestParser()
+        parser.add_argument("name")
+        kwargs = parser.parse_args()
+        msg = db_actions.buy_product(product_id, **kwargs)
+        responce = jsonify(msg)
+        responce.status_code = 201
+        return responce
 
 api.add_resource(ProductAPI, "/api/products/", "/api/products/<product_id>/")
+api.add_resource(UserAPI, "/api/users/<product_id>/")
 
 
 if __name__ == "__main__":

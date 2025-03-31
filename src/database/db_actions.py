@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 from src.database.base import db
-from src.database.models import Product, Review
+from src.database.models import Product, Review, User
 
 
 def get_products():
@@ -42,9 +42,26 @@ def update_product(product_id: str, name: str, description: str, price: float, i
     return f"Товар з id '{product_id}' успішно оновлено"
 
 
-def add_review_product(product_id: str, text: str):
-    review = Review(id=uuid4().hex, text=text)
+def add_review_product(product_id: str, text: str, name: str) -> str:
+    user = User.query.filter_by(name=name).first()
+    if not user:
+        user = User(id=uuid4().hex, name=name)
+
+    review = Review(id=uuid4().hex, text=text, user=user)
     product = Product.query.filter_by(id=product_id).one_or_404()
     product.reviews.append(review)
     db.session.commit()
     return "Відгук успішно додано"
+
+
+def buy_product(product_id: str, name: str) -> str:
+    product = Product.query.filter_by(id=product_id).one_or_404()
+
+    user = User.query.filter_by(name=name).first()
+    if not user:
+        user = User(id=uuid4().hex, name=name)
+
+    user.products.append(product)
+    db.session.add(user)
+    db.session.commit()
+    return f"Користувач '{name}' успішно купив {product.name}"
