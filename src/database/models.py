@@ -37,6 +37,5 @@ class User(db.Model):
 
     id: Mapped[str] = mapped_column(String(), primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
-    reviews: Mapped[List[Review]] = relationship()
     products: Mapped[List[Product]] = relationship(secondary=user_product_assoc)
     
