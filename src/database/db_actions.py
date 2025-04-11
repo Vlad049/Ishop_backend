@@ -61,7 +61,7 @@ def buy_product(product_id: str, name: str) -> str:
     if not user:
         user = User(id=uuid4().hex, name=name)
 
-    user.products.append(product)
-    db.session.add(user)
+    product.users.append(user)
+    # db.session.add(user)
     db.session.commit()
     return f"Користувач '{name}' успішно купив {product.name}"

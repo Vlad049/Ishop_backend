@@ -29,6 +29,7 @@ class Product(db.Model):
     price: Mapped[float] = mapped_column()
     img_url: Mapped[str] = mapped_column(String())
     reviews: Mapped[List[Review]] = relationship()
+    users: Mapped[List["User"]] = relationship(secondary=user_product_assoc)
 
 
 @dataclass
@@ -37,5 +38,4 @@ class User(db.Model):
 
     id: Mapped[str] = mapped_column(String(), primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
-    products: Mapped[List[Product]] = relationship(secondary=user_product_assoc)
     
